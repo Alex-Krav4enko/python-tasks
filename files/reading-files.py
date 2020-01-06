@@ -1,18 +1,21 @@
-with open('recipes.txt', 'r', encoding='utf-8') as f:
-    cook_book = {}
+import contextmanager as cm
+
+cook_book = {}
+
+
+def split_ingredient(ingredient):
+    _ingredient = {}
+    _res = ingredient.split(' | ')
+    _ingredient['ingredient_name'] = _res[0]
+    _ingredient['quantity'] = _res[1]
+    _ingredient['measure'] = _res[2]
+    return _ingredient
+
+
+with cm.CustomCM('recipes.txt') as f:
     dish, dish_number = None, 0
     ingredients, ingredients_number = [], None
     ingredients_use = 0
-
-
-    def split_ingredient(ingredient):
-        _ingredient = {}
-        _res = ingredient.split(' | ')
-        _ingredient['ingredient_name'] = _res[0]
-        _ingredient['quantity'] = _res[1]
-        _ingredient['measure'] = _res[2]
-        return _ingredient
-
 
     for i, line in enumerate(f):
         line = line.strip()
@@ -32,21 +35,21 @@ with open('recipes.txt', 'r', encoding='utf-8') as f:
                 ingredients = []
 
 
-    def get_shop_list_by_dishes(dishes, person_count):
-        ingredients_list = {}
-        for _dish in dishes:
-            for ingredient in cook_book[_dish]:
-                if ingredient.get('ingredient_name') in ingredients_list:
-                    duplicate_ingredient = ingredients_list.get(ingredient.get('ingredient_name'))
-                    _quantity = duplicate_ingredient.get('quantity') + int(ingredient.get('quantity')) * person_count
-                else:
-                    _quantity = int(ingredient.get('quantity')) * person_count
+def get_shop_list_by_dishes(dishes, person_count):
+    ingredients_list = {}
+    for _dish in dishes:
+        for ingredient in cook_book[_dish]:
+            if ingredient.get('ingredient_name') in ingredients_list:
+                duplicate_ingredient = ingredients_list.get(ingredient.get('ingredient_name'))
+                _quantity = duplicate_ingredient.get('quantity') + int(ingredient.get('quantity')) * person_count
+            else:
+                _quantity = int(ingredient.get('quantity')) * person_count
 
-                item = dict(measure=ingredient.get('measure'),
-                            quantity=_quantity)
-                ingredients_list[ingredient.get('ingredient_name')] = item
+            item = dict(measure=ingredient.get('measure'),
+                        quantity=_quantity)
+            ingredients_list[ingredient.get('ingredient_name')] = item
 
-        print(ingredients_list)
+    print(ingredients_list)
 
 
-    get_shop_list_by_dishes(['Омлет', 'Фахитос'], 2)
+get_shop_list_by_dishes(['Омлет', 'Фахитос'], 2)
