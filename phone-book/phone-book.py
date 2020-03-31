@@ -17,7 +17,8 @@ class Contact:
                 {separator.join(self.get_details(self.details))}
         '''
 
-    def get_details(self, raw_details):
+    @staticmethod
+    def get_details(raw_details):
         details = []
         for value in raw_details:
             details.append(f'{value}: {raw_details[value]}')
@@ -40,7 +41,10 @@ class PhoneBook:
         self.contact_list.append(contact)
 
     def delete_contact(self, phone_number):
-        self.contact_list.remove(phone_number)
+        for contact in self.contact_list:
+            if contact.phone_number == phone_number:
+                self.contact_list.remove(contact)
+                break
 
     def get_favorites(self):
         favorites = list(filter(lambda contact: contact.favorite, self.contact_list))
@@ -57,7 +61,8 @@ class PhoneBook:
                 continue
         self._print_list(contacts)
 
-    def _print_list(self, _list):
+    @staticmethod
+    def _print_list(_list):
         if len(_list):
             for contact in _list:
                 print(contact)
@@ -74,5 +79,5 @@ phone_book.add_contact(jhon)
 phone_book.add_contact(bill)
 phone_book.add_contact(kate)
 
-phone_book.get_by_name('ill')
-
+phone_book.delete_contact('+79000000000')
+phone_book.get_contact_list()
