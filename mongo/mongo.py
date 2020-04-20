@@ -5,10 +5,16 @@ import csv
 import re
 
 
+def convert_price_type(concert):
+    concert['Цена'] = int(concert['Цена'])
+    return concert
+
+
 def read_data(csv_file, collection):
     with open(csv_file, encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
-        collection.insert_many(list(reader))
+        concert_list = list(map(convert_price_type, list(reader)))
+        collection.insert_many(concert_list)
 
 
 def find_cheapest(collection):
@@ -26,5 +32,5 @@ if __name__ == '__main__':
     concerts = concerts_db['data']
 
     # read_data('artists.csv', concerts)
-    # pprint(find_cheapest(concerts))
+    pprint(find_cheapest(concerts))
     # pprint(find_by_name(concerts, 'н с'))
